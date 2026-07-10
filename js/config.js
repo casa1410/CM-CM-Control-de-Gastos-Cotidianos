@@ -4,12 +4,12 @@
 // Mientras estos valores sigan con el texto por defecto, la app funcionará
 // automáticamente en "Modo Local" (los datos se guardan en este navegador).
 export const firebaseConfig = {
-    apiKey: "TU_API_KEY_AQUI",
-    authDomain: "TU_DOMINIO.firebaseapp.com",
-    projectId: "TU_PROJECT_ID",
-    storageBucket: "TU_BUCKET.appspot.com",
-    messagingSenderId: "TU_SENDER_ID",
-    appId: "TU_APP_ID"
+    apiKey: "AIzaSyCWndUgvO8F6nWSTWiRWxSxf8fgwX6vMmc",
+    authDomain: "cm-control-gastos.firebaseapp.com",
+    projectId: "cm-control-gastos",
+    storageBucket: "cm-control-gastos.firebasestorage.app",
+    messagingSenderId: "814701952736",
+    appId: "1:814701952736:web:3cbf89189a699585b51a85"
 };
 
 // Identificador de la app, usado como namespace de las colecciones en Firestore.
