@@ -1,5 +1,5 @@
-// Autenticación: correo/contraseña, invitado (anónimo) y modo local sin Firebase.
-import { signInWithEmailAndPassword, createUserWithEmailAndPassword, signInAnonymously, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+// Autenticación: correo/contraseña y modo local sin Firebase.
+import { signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
 import { state } from './state.js';
 import { auth } from './firebase.js';
 import { isOfflineMode } from './config.js';
@@ -38,12 +38,6 @@ export const initAuth = () => {
                 } catch (regError) { showToast('Error de autenticación.', 'error'); }
             } else { showToast('Error de conexión.', 'error'); }
         }
-    });
-
-    document.getElementById('btn-guest').addEventListener('click', async () => {
-        if (isOfflineMode) return loginLocal();
-        try { await signInAnonymously(auth); showToast('Ingreso como invitado exitoso', 'success'); }
-        catch (error) { showToast('Error al ingresar.', 'error'); }
     });
 
     document.getElementById('btn-logout').addEventListener('click', () => {
