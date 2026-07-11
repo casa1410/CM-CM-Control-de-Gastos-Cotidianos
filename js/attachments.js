@@ -96,7 +96,7 @@ export const initAttachments = () => {
         const contentDiv = document.getElementById('attachment-content');
         const card = document.getElementById('attachment-modal-card');
 
-        contentDiv.innerHTML = '<div class="animate-pulse flex flex-col items-center text-slate-500"><i class="ph ph-spinner-gap animate-spin text-4xl mb-2"></i> Cargando documento...</div>';
+        contentDiv.innerHTML = '<div class="animate-pulse flex flex-col items-center text-slate-500 dark:text-slate-400"><i class="ph ph-spinner-gap animate-spin text-4xl mb-2"></i> Cargando documento...</div>';
 
         modal.classList.remove('hidden');
         setTimeout(() => {

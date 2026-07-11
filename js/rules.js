@@ -78,11 +78,11 @@ const updateRuleSumIndicator = () => {
     const saveBtn = document.getElementById('btn-save-rule');
     indicator.innerText = `Suma actual: ${sum}%`;
     if (sum === 100) {
-        indicator.className = 'text-xs font-medium text-emerald-600';
+        indicator.className = 'text-xs font-medium text-emerald-600 dark:text-emerald-400';
         saveBtn.disabled = false;
         saveBtn.classList.remove('opacity-50', 'cursor-not-allowed');
     } else {
-        indicator.className = 'text-xs font-medium text-rose-500';
+        indicator.className = 'text-xs font-medium text-rose-500 dark:text-rose-400';
         saveBtn.disabled = true;
         saveBtn.classList.add('opacity-50', 'cursor-not-allowed');
     }

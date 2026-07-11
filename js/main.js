@@ -9,6 +9,7 @@ import { initTransactions } from './transactions.js';
 import { initCsvImport } from './csvImport.js';
 import { initBackup } from './backup.js';
 import { initAuth } from './auth.js';
+import { initTheme } from './theme.js';
 
 document.getElementById('month-selector').value = state.currentMonth;
 document.getElementById('month-selector').addEventListener('change', (e) => {
@@ -24,3 +25,4 @@ initCsvImport();
 initBackup();
 initRuleSettingsUI(() => { renderDashboard(); renderComparisonChart(); });
 initAuth();
+initTheme(() => { renderDashboard(); renderComparisonChart(); });

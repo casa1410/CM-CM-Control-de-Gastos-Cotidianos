@@ -76,28 +76,28 @@ export const renderDashboard = () => {
         const dateStr = new Date(tx.date).toLocaleDateString('es-CO', { day: '2-digit', month: 'short' });
         const icon = tx.type === 'income' ? '<i class="ph-fill ph-arrow-circle-up text-emerald-500"></i>' : '<i class="ph-fill ph-arrow-circle-down text-rose-500"></i>';
         const ruleBadge = tx.type === 'income' ?
-            `<span class="bg-blue-100 text-blue-700 px-2 py-0.5 rounded text-xs font-medium">Ingreso</span>` :
-            `<span class="bg-slate-100 text-slate-700 px-2 py-0.5 rounded text-xs font-medium">${tx.ruleClass === 'needs' ? state.rule.needs + '% Nec.' : tx.ruleClass === 'wants' ? state.rule.wants + '% Des.' : state.rule.savings + '% Aho.'} - ${tx.chapter}</span>`;
+            `<span class="bg-blue-100 dark:bg-blue-500/20 text-blue-700 dark:text-blue-300 px-2 py-0.5 rounded text-xs font-medium">Ingreso</span>` :
+            `<span class="bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 px-2 py-0.5 rounded text-xs font-medium">${tx.ruleClass === 'needs' ? state.rule.needs + '% Nec.' : tx.ruleClass === 'wants' ? state.rule.wants + '% Des.' : state.rule.savings + '% Aho.'} - ${tx.chapter}</span>`;
 
         const attachmentBtn = tx.fileAttachment ?
-            `<button onclick="window.viewAttachment('${tx.id}')" class="text-blue-500 hover:text-blue-700 transition-colors mr-2 bg-blue-50 p-1 rounded" title="Ver Soporte Adjunto">
+            `<button onclick="window.viewAttachment('${tx.id}')" class="text-blue-500 hover:text-blue-700 transition-colors mr-2 bg-blue-50 dark:bg-blue-500/10 p-1 rounded" title="Ver Soporte Adjunto">
                 <i class="ph-bold ph-paperclip text-lg"></i>
             </button>` : '';
 
         tableBody.innerHTML += `
-            <tr class="hover:bg-slate-50 transition-colors group">
-                <td class="p-3 text-slate-500 whitespace-nowrap">${dateStr}</td>
-                <td class="p-3 font-medium text-slate-700 truncate max-w-[150px]" title="${tx.description}">${icon} ${tx.description}</td>
+            <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/60 transition-colors group">
+                <td class="p-3 text-slate-500 dark:text-slate-400 whitespace-nowrap">${dateStr}</td>
+                <td class="p-3 font-medium text-slate-700 dark:text-slate-200 truncate max-w-[150px]" title="${tx.description}">${icon} ${tx.description}</td>
                 <td class="p-3">${ruleBadge}</td>
-                <td class="p-3 text-slate-500 text-xs truncate max-w-[120px]" title="${tx.reference || ''}">${tx.reference || '-'}</td>
-                <td class="p-3 text-slate-500 text-xs truncate max-w-[150px]" title="${tx.observation || ''}">${tx.observation || '-'}</td>
-                <td class="p-3 text-right font-semibold ${tx.type === 'income' ? 'text-emerald-600' : 'text-slate-800'}">${formatCOP(tx.amount)}</td>
+                <td class="p-3 text-slate-500 dark:text-slate-400 text-xs truncate max-w-[120px]" title="${tx.reference || ''}">${tx.reference || '-'}</td>
+                <td class="p-3 text-slate-500 dark:text-slate-400 text-xs truncate max-w-[150px]" title="${tx.observation || ''}">${tx.observation || '-'}</td>
+                <td class="p-3 text-right font-semibold ${tx.type === 'income' ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-800 dark:text-slate-100'}">${formatCOP(tx.amount)}</td>
                 <td class="p-3 text-center whitespace-nowrap">
                     ${attachmentBtn}
-                    <button onclick="window.editTx('${tx.id}')" class="text-slate-400 hover:text-amber-500 transition-colors mr-2" title="Editar">
+                    <button onclick="window.editTx('${tx.id}')" class="text-slate-400 dark:text-slate-500 hover:text-amber-500 transition-colors mr-2" title="Editar">
                         <i class="ph-fill ph-pencil-simple text-lg"></i>
                     </button>
-                    <button onclick="window.deleteTx('${tx.id}')" class="text-slate-400 hover:text-rose-500 transition-colors" title="Eliminar">
+                    <button onclick="window.deleteTx('${tx.id}')" class="text-slate-400 dark:text-slate-500 hover:text-rose-500 transition-colors" title="Eliminar">
                         <i class="ph-fill ph-trash text-lg"></i>
                     </button>
                 </td>
@@ -109,7 +109,7 @@ export const renderDashboard = () => {
     document.getElementById('total-income').innerText = formatCOP(totalIncome);
     document.getElementById('total-expenses').innerText = formatCOP(totalExpense);
     document.getElementById('total-balance').innerText = formatCOP(balance);
-    document.getElementById('total-balance').className = `text-2xl font-bold mt-1 ${balance < 0 ? 'text-rose-500' : 'text-slate-800'}`;
+    document.getElementById('total-balance').className = `text-2xl font-bold mt-1 ${balance < 0 ? 'text-rose-500' : 'text-slate-800 dark:text-slate-100'}`;
 
     const limitNeeds = totalIncome * (state.rule.needs / 100);
     const limitWants = totalIncome * (state.rule.wants / 100);
