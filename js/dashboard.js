@@ -35,7 +35,7 @@ const updateCharts = (needs, wants, savings, inc, exp, chapterTotals) => {
     const ctxChapters = document.getElementById('chart-chapters').getContext('2d');
     if (state.charts.chapters) state.charts.chapters.destroy();
     const chapterLabels = Object.keys(chapterTotals); const chapterData = Object.values(chapterTotals);
-    const chapterColors = ['#8b5cf6', '#ec4899', '#f43f5e', '#f97316', '#eab308', '#22c55e', '#0ea5e9', '#64748b'];
+    const chapterColors = ['#8b5cf6', '#ec4899', '#f43f5e', '#f97316', '#eab308', '#22c55e', '#0ea5e9', '#64748b', '#14b8a6'];
     state.charts.chapters = new Chart(ctxChapters, {
         type: 'bar',
         data: { labels: chapterLabels.length > 0 ? chapterLabels : ['Sin datos'], datasets: [{ label: 'Gasto por Capítulo', data: chapterData.length > 0 ? chapterData : [0], backgroundColor: chapterColors, borderRadius: 4 }] },
@@ -56,13 +56,6 @@ export const renderDashboard = () => {
     let totalIncome = 0, totalExpense = 0, spentNeeds = 0, spentWants = 0, spentSavings = 0;
     const chapterTotals = {};
 
-    filteredTx.sort((a, b) => new Date(b.date) - new Date(a.date));
-    const tableBody = document.getElementById('tx-table-body');
-    tableBody.innerHTML = '';
-
-    if (filteredTx.length === 0) document.getElementById('empty-state').classList.remove('hidden');
-    else document.getElementById('empty-state').classList.add('hidden');
-
     filteredTx.forEach(tx => {
         if (tx.type === 'income') totalIncome += tx.amount;
         else {
@@ -72,7 +65,18 @@ export const renderDashboard = () => {
             else if (tx.ruleClass === 'savings') spentSavings += tx.amount;
             chapterTotals[tx.chapter] = (chapterTotals[tx.chapter] || 0) + tx.amount;
         }
+    });
 
+    // La tabla respeta además el filtro de Capítulo/Regla; los totales y gráficas usan el mes completo.
+    const tableTx = filteredTx.filter(tx => state.currentChapterFilter === 'all' || tx.chapter === state.currentChapterFilter);
+    tableTx.sort((a, b) => new Date(b.date) - new Date(a.date));
+    const tableBody = document.getElementById('tx-table-body');
+    tableBody.innerHTML = '';
+
+    if (tableTx.length === 0) document.getElementById('empty-state').classList.remove('hidden');
+    else document.getElementById('empty-state').classList.add('hidden');
+
+    tableTx.forEach(tx => {
         const dateStr = new Date(tx.date).toLocaleDateString('es-CO', { day: '2-digit', month: 'short' });
         const icon = tx.type === 'income' ? '<i class="ph-fill ph-arrow-circle-up text-emerald-500"></i>' : '<i class="ph-fill ph-arrow-circle-down text-rose-500"></i>';
         const ruleBadge = tx.type === 'income' ?

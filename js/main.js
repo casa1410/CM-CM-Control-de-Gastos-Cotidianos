@@ -19,6 +19,11 @@ document.getElementById('month-selector').addEventListener('change', (e) => {
 
 document.getElementById('comparison-metric').addEventListener('change', () => { renderComparisonChart(); });
 
+document.getElementById('filter-chapter').addEventListener('change', (e) => {
+    state.currentChapterFilter = e.target.value;
+    renderDashboard();
+});
+
 initAttachments();
 initTransactions();
 initCsvImport();
