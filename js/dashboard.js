@@ -2,6 +2,9 @@
 import { state } from './state.js';
 import { formatCOP } from './utils.js';
 
+// Colores fijos por categoría (coinciden con la leyenda del gráfico "Distribución de la Regla").
+const BAR_COLORS = { needs: 'bg-emerald-500', wants: 'bg-amber-400', savings: 'bg-secondary' };
+
 const updateBar = (idPrefix, spent, limit) => {
     const pct = limit > 0 ? (spent / limit) * 100 : (spent > 0 ? 100 : 0);
     const pctClamped = Math.min(pct, 100);
@@ -10,12 +13,8 @@ const updateBar = (idPrefix, spent, limit) => {
     const bar = document.getElementById(`bar-${idPrefix}`);
     bar.style.width = `${pctClamped}%`;
     bar.classList.remove('bg-emerald-500', 'bg-amber-400', 'bg-rose-500', 'bg-secondary');
-    if (idPrefix === 'savings') bar.classList.add('bg-secondary');
-    else {
-        if (pct < 75) bar.classList.add('bg-emerald-500');
-        else if (pct < 90) bar.classList.add('bg-amber-400');
-        else bar.classList.add('bg-rose-500');
-    }
+    const overBudget = idPrefix !== 'savings' && pct > 100;
+    bar.classList.add(overBudget ? 'bg-rose-500' : BAR_COLORS[idPrefix]);
 };
 
 const percentLabelPlugin = typeof ChartDataLabels !== 'undefined' ? [ChartDataLabels] : [];
