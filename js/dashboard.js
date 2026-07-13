@@ -18,6 +18,17 @@ const updateBar = (idPrefix, spent, limit) => {
     }
 };
 
+const percentLabelPlugin = typeof ChartDataLabels !== 'undefined' ? [ChartDataLabels] : [];
+const percentLabelOptions = {
+    color: '#fff',
+    font: { weight: 'bold', size: 11 },
+    formatter: (value, ctx) => {
+        const total = ctx.chart.data.datasets[0].data.reduce((a, b) => a + b, 0);
+        if (!total || !value) return '';
+        return `${(value / total * 100).toFixed(1)}%`;
+    }
+};
+
 const updateCharts = (needs, wants, savings, inc, exp, chapterTotals) => {
     const { rule } = state;
 
@@ -29,7 +40,8 @@ const updateCharts = (needs, wants, savings, inc, exp, chapterTotals) => {
             labels: [`Necesidades (${rule.needs}%)`, `Deseos (${rule.wants}%)`, `Ahorro/Inv. (${rule.savings}%)`],
             datasets: [{ data: [needs, wants, savings], backgroundColor: ['#10b981', '#f59e0b', '#3b82f6'], borderWidth: 0 }]
         },
-        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 11 } } } } }
+        plugins: percentLabelPlugin,
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 11 } } }, datalabels: percentLabelOptions } }
     });
 
     const ctxChapters = document.getElementById('chart-chapters').getContext('2d');
@@ -47,7 +59,8 @@ const updateCharts = (needs, wants, savings, inc, exp, chapterTotals) => {
     state.charts.balance = new Chart(ctx2, {
         type: 'doughnut',
         data: { labels: ['Ingresos', 'Gastos'], datasets: [{ data: [inc, exp], backgroundColor: ['#1e3a8a', '#f43f5e'], borderWidth: 0 }] },
-        options: { responsive: true, maintainAspectRatio: false, cutout: '70%', plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 11 } } } } }
+        plugins: percentLabelPlugin,
+        options: { responsive: true, maintainAspectRatio: false, cutout: '70%', plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 11 } } }, datalabels: percentLabelOptions } }
     });
 };
 
