@@ -27,6 +27,9 @@
     <!-- Phosphor Icons -->
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
 
+    <!-- SheetJS (exportar a Excel) -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="css/styles.css" rel="stylesheet">
 </head>
@@ -360,6 +363,9 @@
                             <div class="flex flex-col sm:flex-row items-center gap-3">
                                 <button id="btn-export-backup" type="button" class="w-full sm:w-auto bg-primary hover:bg-blue-900 text-white font-medium py-2 px-4 rounded-lg transition-colors text-sm shadow whitespace-nowrap flex items-center justify-center gap-2">
                                     <i class="ph ph-download-simple"></i> Descargar Copia de Seguridad
+                                </button>
+                                <button id="btn-export-excel" type="button" class="w-full sm:w-auto bg-accent hover:bg-emerald-600 text-white font-medium py-2 px-4 rounded-lg transition-colors text-sm shadow whitespace-nowrap flex items-center justify-center gap-2">
+                                    <i class="ph ph-file-xls"></i> Descargar Excel
                                 </button>
                                 <label class="w-full sm:w-auto cursor-pointer bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 font-medium py-2 px-4 rounded-lg transition-colors text-sm shadow whitespace-nowrap flex items-center justify-center gap-2">
                                     <i class="ph ph-upload-simple"></i> Restaurar Copia

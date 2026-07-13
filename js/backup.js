@@ -38,6 +38,33 @@ const exportBackup = () => {
     showToast('Copia de seguridad descargada', 'success');
 };
 
+const RULE_LABELS = { needs: 'Necesidad', wants: 'Deseo', savings: 'Ahorro/Inversión', income: 'Ingreso' };
+
+const exportExcel = () => {
+    const rows = [...state.allTransactions]
+        .sort((a, b) => new Date(a.date) - new Date(b.date))
+        .map(tx => ({
+            Fecha: tx.date ? new Date(tx.date).toLocaleDateString('es-CO') : '',
+            Tipo: tx.type === 'income' ? 'Ingreso' : 'Gasto',
+            Descripción: tx.description || '',
+            Capítulo: tx.chapter || '',
+            Clasificación: RULE_LABELS[tx.ruleClass] || tx.ruleClass || '',
+            Valor: tx.amount || 0,
+            'Medio/Referencia': tx.reference || '',
+            Observaciones: tx.observation || ''
+        }));
+
+    const worksheet = XLSX.utils.json_to_sheet(rows);
+    worksheet['!cols'] = [{ wch: 12 }, { wch: 10 }, { wch: 30 }, { wch: 16 }, { wch: 16 }, { wch: 14 }, { wch: 20 }, { wch: 30 }];
+
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Movimientos');
+
+    const dateStamp = new Date().toISOString().slice(0, 10);
+    XLSX.writeFile(workbook, `movimientos-cm-${dateStamp}.xlsx`);
+    showToast('Excel descargado', 'success');
+};
+
 const restoreLocal = (payload) => {
     state.allTransactions = payload.transactions.map(tx => ({ ...tx, id: tx.id || (Date.now().toString() + Math.random()) }));
     localStorage.setItem('ycm_txs', JSON.stringify(state.allTransactions));
@@ -77,6 +104,12 @@ export const initBackup = () => {
     document.getElementById('btn-export-backup').addEventListener('click', () => {
         if (!state.currentUser) return showToast('Inicia sesión primero', 'error');
         exportBackup();
+    });
+
+    document.getElementById('btn-export-excel').addEventListener('click', () => {
+        if (!state.currentUser) return showToast('Inicia sesión primero', 'error');
+        if (state.allTransactions.length === 0) return showToast('No hay movimientos para exportar', 'error');
+        exportExcel();
     });
 
     document.getElementById('backup-restore-file').addEventListener('change', async (e) => {
