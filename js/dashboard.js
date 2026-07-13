@@ -28,6 +28,17 @@ const percentLabelOptions = {
         return `${(value / total * 100).toFixed(1)}%`;
     }
 };
+const barPercentLabelOptions = {
+    color: () => document.documentElement.classList.contains('dark') ? '#e2e8f0' : '#334155',
+    font: { weight: 'bold', size: 10 },
+    anchor: 'end',
+    align: 'top',
+    formatter: (value, ctx) => {
+        const total = ctx.chart.data.datasets[0].data.reduce((a, b) => a + b, 0);
+        if (!total || !value) return '';
+        return `${(value / total * 100).toFixed(1)}%`;
+    }
+};
 
 const updateCharts = (needs, wants, savings, inc, exp, chapterTotals) => {
     const { rule } = state;
@@ -51,7 +62,13 @@ const updateCharts = (needs, wants, savings, inc, exp, chapterTotals) => {
     state.charts.chapters = new Chart(ctxChapters, {
         type: 'bar',
         data: { labels: chapterLabels.length > 0 ? chapterLabels : ['Sin datos'], datasets: [{ label: 'Gasto por Capítulo', data: chapterData.length > 0 ? chapterData : [0], backgroundColor: chapterColors, borderRadius: 4 }] },
-        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { display: false }, x: { ticks: { font: { size: 10 } } } } }
+        plugins: percentLabelPlugin,
+        options: {
+            responsive: true, maintainAspectRatio: false,
+            layout: { padding: { top: 20 } },
+            plugins: { legend: { display: false }, datalabels: barPercentLabelOptions },
+            scales: { y: { display: false }, x: { ticks: { font: { size: 10 } } } }
+        }
     });
 
     const ctx2 = document.getElementById('chart-balance').getContext('2d');
