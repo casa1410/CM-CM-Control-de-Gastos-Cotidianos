@@ -27,6 +27,18 @@ const percentLabelOptions = {
         return `${(value / total * 100).toFixed(1)}%`;
     }
 };
+// Para "Ingresos vs Gastos": el % se calcula sobre el ingreso (cuánto de lo que ganaste te has gastado),
+// no sobre la suma de ambas cifras.
+const balancePercentLabelOptions = {
+    color: '#fff',
+    font: { weight: 'bold', size: 11 },
+    formatter: (value, ctx) => {
+        const income = ctx.chart.data.datasets[0].data[0];
+        if (!income) return '';
+        return `${(value / income * 100).toFixed(1)}%`;
+    }
+};
+
 const barPercentLabelOptions = {
     color: () => document.documentElement.classList.contains('dark') ? '#e2e8f0' : '#334155',
     font: { weight: 'bold', size: 10 },
@@ -76,7 +88,7 @@ const updateCharts = (needs, wants, savings, inc, exp, chapterTotals) => {
         type: 'doughnut',
         data: { labels: ['Ingresos', 'Gastos'], datasets: [{ data: [inc, exp], backgroundColor: ['#1e3a8a', '#f43f5e'], borderWidth: 0 }] },
         plugins: percentLabelPlugin,
-        options: { responsive: true, maintainAspectRatio: false, cutout: '70%', plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 11 } } }, datalabels: percentLabelOptions } }
+        options: { responsive: true, maintainAspectRatio: false, cutout: '70%', plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 11 } } }, datalabels: balancePercentLabelOptions } }
     });
 };
 
