@@ -27,28 +27,17 @@ const percentLabelOptions = {
         return `${(value / total * 100).toFixed(1)}%`;
     }
 };
-// Para "Ingresos vs Gastos": el % se calcula sobre el ingreso (cuánto de lo que ganaste te has gastado),
-// no sobre la suma de ambas cifras.
-const balancePercentLabelOptions = {
-    color: '#fff',
-    font: { weight: 'bold', size: 11 },
-    formatter: (value, ctx) => {
-        const income = ctx.chart.data.datasets[0].data[0];
-        if (!income) return '';
-        return `${(value / income * 100).toFixed(1)}%`;
-    }
-};
-
-const barPercentLabelOptions = {
-    color: () => document.documentElement.classList.contains('dark') ? '#e2e8f0' : '#334155',
-    font: { weight: 'bold', size: 10 },
-    anchor: 'end',
-    align: 'top',
-    formatter: (value, ctx) => {
-        const total = ctx.chart.data.datasets[0].data.reduce((a, b) => a + b, 0);
-        if (!total || !value) return '';
-        return `${(value / total * 100).toFixed(1)}%`;
-    }
+// Leyenda con monto + porcentaje (ej. "Gastos: $4.389.550 (68.0%)"), en vez del texto plano por defecto.
+const amountLegendLabels = (chart) => {
+    const data = chart.data.datasets[0].data;
+    const bg = chart.data.datasets[0].backgroundColor;
+    const total = data.reduce((a, b) => a + b, 0);
+    return chart.data.labels.map((label, i) => ({
+        text: `${label}: ${formatCOP(data[i])} (${total ? (data[i] / total * 100).toFixed(1) : '0.0'}%)`,
+        fillStyle: bg[i],
+        strokeStyle: bg[i],
+        index: i
+    }));
 };
 
 const updateCharts = (needs, wants, savings, inc, exp, chapterTotals) => {
@@ -66,6 +55,18 @@ const updateCharts = (needs, wants, savings, inc, exp, chapterTotals) => {
         options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 11 } } }, datalabels: percentLabelOptions } }
     });
 
+    // Cada capítulo se muestra como % del ingreso total del mes (cuánto de lo que ganaste se fue en eso).
+    const chapterPercentLabelOptions = {
+        color: () => document.documentElement.classList.contains('dark') ? '#e2e8f0' : '#334155',
+        font: { weight: 'bold', size: 10 },
+        anchor: 'end',
+        align: 'top',
+        formatter: (value) => {
+            if (!inc || !value) return '';
+            return `${(value / inc * 100).toFixed(1)}%`;
+        }
+    };
+
     const ctxChapters = document.getElementById('chart-chapters').getContext('2d');
     if (state.charts.chapters) state.charts.chapters.destroy();
     const chapterLabels = Object.keys(chapterTotals); const chapterData = Object.values(chapterTotals);
@@ -77,18 +78,26 @@ const updateCharts = (needs, wants, savings, inc, exp, chapterTotals) => {
         options: {
             responsive: true, maintainAspectRatio: false,
             layout: { padding: { top: 20 } },
-            plugins: { legend: { display: false }, datalabels: barPercentLabelOptions },
+            plugins: { legend: { display: false }, datalabels: chapterPercentLabelOptions },
             scales: { y: { display: false }, x: { ticks: { font: { size: 10 } } } }
         }
     });
 
+    // Distribución del ingreso: Gastos (rojo) vs Saldo disponible (azul), ambos suman el 100% del ingreso.
+    const balanceRemaining = Math.max(0, inc - exp);
     const ctx2 = document.getElementById('chart-balance').getContext('2d');
     if (state.charts.balance) state.charts.balance.destroy();
     state.charts.balance = new Chart(ctx2, {
         type: 'doughnut',
-        data: { labels: ['Ingresos', 'Gastos'], datasets: [{ data: [inc, exp], backgroundColor: ['#1e3a8a', '#f43f5e'], borderWidth: 0 }] },
+        data: { labels: ['Gastos', 'Saldo'], datasets: [{ data: [exp, balanceRemaining], backgroundColor: ['#ef4444', '#1e3a8a'], borderWidth: 0 }] },
         plugins: percentLabelPlugin,
-        options: { responsive: true, maintainAspectRatio: false, cutout: '70%', plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 11 } } }, datalabels: balancePercentLabelOptions } }
+        options: {
+            responsive: true, maintainAspectRatio: false, cutout: '60%',
+            plugins: {
+                legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 11 }, generateLabels: amountLegendLabels } },
+                datalabels: percentLabelOptions
+            }
+        }
     });
 };
 
