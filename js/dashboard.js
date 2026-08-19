@@ -141,7 +141,7 @@ export const renderDashboard = () => {
         tableBody.innerHTML += `
             <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/60 transition-colors group">
                 <td class="p-3 text-slate-500 dark:text-slate-400 whitespace-nowrap">${dateStr}</td>
-                <td class="p-3 font-medium text-slate-700 dark:text-slate-200 truncate max-w-[150px]" title="${tx.description}">${icon} ${tx.description}</td>
+                <td class="p-3 font-medium text-slate-700 dark:text-slate-200 break-words max-w-[220px]">${icon} ${tx.description}</td>
                 <td class="p-3">${ruleBadge}</td>
                 <td class="p-3 text-slate-500 dark:text-slate-400 text-xs truncate max-w-[120px]" title="${tx.reference || ''}">${tx.reference || '-'}</td>
                 <td class="p-3 text-slate-500 dark:text-slate-400 text-xs truncate max-w-[150px]" title="${tx.observation || ''}">${tx.observation || '-'}</td>
