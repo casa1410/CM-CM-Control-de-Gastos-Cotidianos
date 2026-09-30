@@ -3,7 +3,7 @@ import { addDoc, updateDoc, deleteDoc, doc } from "https://www.gstatic.com/fireb
 import { state } from './state.js';
 import { db } from './firebase.js';
 import { isOfflineMode, appId } from './config.js';
-import { parseAmount, showToast } from './utils.js';
+import { parseAmount, showToast, attachAmountFormatter } from './utils.js';
 import { resetFileInput, setExistingAttachmentLabel } from './attachments.js';
 import { getCollectionRef, loadData } from './data.js';
 
@@ -20,27 +20,7 @@ const resetFormState = () => {
 };
 
 export const initTransactions = () => {
-    // Formato dinámico de miles en el input de valor
-    amountInput.addEventListener('input', function (e) {
-        let rawValue = e.target.value;
-        let value = rawValue.replace(/\./g, '').replace(/,/g, '.');
-        value = value.replace(/[^0-9.]/g, '');
-
-        const parts = value.split('.');
-        if (parts.length > 2) value = parts[0] + '.' + parts.slice(1).join('');
-
-        if (value !== '') {
-            let formatted = new Intl.NumberFormat('es-CO').format(parts[0]);
-            if (parts.length > 1) {
-                formatted += ',' + parts[1].substring(0, 2);
-            } else if (rawValue.endsWith(',')) {
-                formatted += ',';
-            }
-            e.target.value = formatted;
-        } else {
-            e.target.value = '';
-        }
-    });
+    attachAmountFormatter(amountInput);
 
     document.getElementById('tx-type').addEventListener('change', (e) => {
         const ruleContainer = document.getElementById('container-rule');

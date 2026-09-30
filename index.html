@@ -87,7 +87,10 @@
                         <i class="ph ph-calendar-blank text-slate-500 dark:text-slate-400"></i>
                         <input type="month" id="month-selector" class="bg-transparent border-none text-sm font-medium text-slate-700 dark:text-slate-200 focus:ring-0 cursor-pointer w-[110px] sm:w-auto">
                     </div>
-                    <button id="btn-logout" class="text-slate-500 dark:text-slate-400 hover:text-red-500 transition-colors p-2 rounded-full hover:bg-red-50 dark:hover:bg-red-900/30" title="Cerrar Sesión">
+                    <button id="btn-goto-loans" type="button" class="text-slate-500 dark:text-slate-400 hover:text-primary dark:hover:text-secondary transition-colors p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800" title="Ir a Préstamos">
+                        <i class="ph ph-handshake text-xl"></i>
+                    </button>
+                    <button id="btn-logout"class="text-slate-500 dark:text-slate-400 hover:text-red-500 transition-colors p-2 rounded-full hover:bg-red-50 dark:hover:bg-red-900/30" title="Cerrar Sesión">
                         <i class="ph ph-sign-out text-xl"></i>
                     </button>
                 </div>
@@ -435,6 +438,114 @@
                     </div>
                 </div>
 
+                <!-- Préstamos -->
+                <div id="loans-section" class="glass-card rounded-2xl p-6 scroll-mt-4">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-3">
+                        <h2 class="text-lg font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
+                            <i class="ph-fill ph-handshake text-primary"></i> Préstamos
+                        </h2>
+                        <button id="btn-new-loan" type="button" class="w-full sm:w-auto bg-primary hover:bg-blue-900 text-white font-medium py-2 px-4 rounded-lg transition-colors text-sm shadow flex items-center justify-center gap-2">
+                            <i class="ph ph-plus"></i> Nuevo Préstamo
+                        </button>
+                    </div>
+
+                    <!-- Resumen -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+                        <div class="rounded-xl p-4 border-l-4 border-l-rose-500 bg-slate-50 dark:bg-slate-800/60">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <p class="text-sm font-medium text-slate-500 dark:text-slate-400">Yo debo</p>
+                                    <h3 class="text-2xl font-bold text-slate-800 dark:text-slate-100 mt-1" id="loans-total-owe">$0</h3>
+                                    <p class="text-xs text-slate-400 dark:text-slate-500 mt-0.5" id="loans-count-owe">0 préstamo(s) activo(s)</p>
+                                </div>
+                                <div class="bg-rose-100 dark:bg-rose-500/10 p-2 rounded-lg text-rose-500"><i class="ph ph-arrow-circle-down text-xl"></i></div>
+                            </div>
+                        </div>
+                        <div class="rounded-xl p-4 border-l-4 border-l-emerald-500 bg-slate-50 dark:bg-slate-800/60">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <p class="text-sm font-medium text-slate-500 dark:text-slate-400">Me deben</p>
+                                    <h3 class="text-2xl font-bold text-slate-800 dark:text-slate-100 mt-1" id="loans-total-owed">$0</h3>
+                                    <p class="text-xs text-slate-400 dark:text-slate-500 mt-0.5" id="loans-count-owed">0 préstamo(s) activo(s)</p>
+                                </div>
+                                <div class="bg-emerald-100 dark:bg-emerald-500/10 p-2 rounded-lg text-emerald-500"><i class="ph ph-arrow-circle-up text-xl"></i></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Formulario de préstamo -->
+                    <div id="loan-form-panel" class="hidden mb-4 p-4 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-200 dark:border-slate-700">
+                        <h3 class="text-sm font-bold text-slate-700 dark:text-slate-200 mb-3" id="loan-form-title">Nuevo préstamo</h3>
+                        <form id="loan-form" class="space-y-4">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Tipo de Préstamo</label>
+                                    <select id="loan-direction" class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-slate-100 rounded-lg focus:ring-2 focus:ring-primary outline-none text-sm">
+                                        <option value="borrowed">Me prestaron (yo debo)</option>
+                                        <option value="lent">Yo presté (me deben)</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Persona o Entidad</label>
+                                    <input type="text" id="loan-person" class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-slate-100 rounded-lg focus:ring-2 focus:ring-primary outline-none text-sm" placeholder="Ej. Banco, Juan, Tía Marta" required>
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Monto Total a Pagar (COP)</label>
+                                    <input type="text" id="loan-amount" inputmode="decimal" class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-slate-100 rounded-lg focus:ring-2 focus:ring-primary outline-none text-sm font-medium" placeholder="Ej. 2.000.000" required>
+                                    <p class="text-[10px] text-slate-400 dark:text-slate-500 mt-1">Incluye intereses si los hay.</p>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">N° de Cuotas (Opcional)</label>
+                                    <input type="number" id="loan-installments" min="1" step="1" class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-slate-100 rounded-lg focus:ring-2 focus:ring-primary outline-none text-sm" placeholder="Ej. 12">
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Fecha del Préstamo</label>
+                                    <input type="date" id="loan-start" class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-slate-100 dark:[color-scheme:dark] rounded-lg focus:ring-2 focus:ring-primary outline-none text-sm">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Fecha Límite (Opcional)</label>
+                                    <input type="date" id="loan-due" class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-slate-100 dark:[color-scheme:dark] rounded-lg focus:ring-2 focus:ring-primary outline-none text-sm">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Observaciones</label>
+                                <input type="text" id="loan-obs" class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-slate-100 rounded-lg focus:ring-2 focus:ring-primary outline-none text-sm" placeholder="Ej. Interés 1,5% mensual, se paga los días 5">
+                            </div>
+                            <div class="flex justify-end gap-2">
+                                <input type="hidden" id="loan-id" value="">
+                                <button type="button" id="btn-cancel-loan" class="bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 font-medium py-2 px-4 rounded-lg transition-colors text-sm">Cancelar</button>
+                                <button type="submit" class="bg-primary hover:bg-blue-900 text-white font-medium py-2 px-5 rounded-lg transition-colors shadow flex items-center gap-2 text-sm">
+                                    <i class="ph ph-floppy-disk"></i> <span id="text-submit-loan">Guardar Préstamo</span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Filtros -->
+                    <div class="flex flex-col sm:flex-row gap-3 mb-4">
+                        <select id="loans-filter-status" class="px-3 py-2 border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-slate-100 rounded-lg focus:ring-2 focus:ring-primary outline-none text-sm">
+                            <option value="active">Pendientes</option>
+                            <option value="settled">Saldados</option>
+                            <option value="all">Todos</option>
+                        </select>
+                        <select id="loans-filter-direction" class="px-3 py-2 border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-slate-100 rounded-lg focus:ring-2 focus:ring-primary outline-none text-sm">
+                            <option value="all">Yo debo y me deben</option>
+                            <option value="borrowed">Solo lo que yo debo</option>
+                            <option value="lent">Solo lo que me deben</option>
+                        </select>
+                    </div>
+
+                    <div id="loans-list" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4"></div>
+                    <div id="loans-empty-state" class="hidden text-center py-8 text-slate-500 dark:text-slate-400">
+                        <i class="ph ph-handshake text-4xl mb-2 opacity-50"></i>
+                        <p>No hay préstamos para mostrar.</p>
+                    </div>
+                </div>
+
             </div>
 
             <div class="h-12"></div>
@@ -452,6 +563,74 @@
             </div>
             <div class="flex-1 overflow-auto p-4 flex justify-center items-center bg-slate-200 dark:bg-slate-900 relative" id="attachment-content">
                 <!-- El contenido (Imagen o PDF) se inyecta aquí -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de pagos de un préstamo -->
+    <div id="payments-modal" class="fixed inset-0 bg-slate-900/80 z-50 hidden flex items-center justify-center p-4 transition-opacity duration-300 opacity-0 pointer-events-none">
+        <div class="bg-white dark:bg-slate-800 rounded-2xl w-full max-w-lg max-h-[90vh] flex flex-col overflow-hidden shadow-2xl transform scale-95 transition-transform duration-300" id="payments-modal-card">
+            <div class="p-4 border-b border-slate-200 dark:border-slate-700 flex justify-between items-center gap-2 bg-slate-50 dark:bg-slate-800">
+                <h3 class="font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2 min-w-0">
+                    <i class="ph ph-receipt text-primary text-xl shrink-0"></i> <span id="payments-modal-title" class="truncate">Pagos</span>
+                </h3>
+                <button id="btn-close-payments" type="button" class="text-slate-500 dark:text-slate-400 hover:text-rose-500 transition-colors bg-white dark:bg-slate-700 hover:bg-rose-50 dark:hover:bg-rose-900/30 p-1.5 rounded-lg border border-slate-200 dark:border-slate-600 shrink-0">
+                    <i class="ph ph-x text-lg"></i>
+                </button>
+            </div>
+            <div class="flex-1 overflow-y-auto p-4 space-y-4">
+                <div class="grid grid-cols-3 gap-2 text-center">
+                    <div class="bg-slate-50 dark:bg-slate-900/50 rounded-lg p-2">
+                        <p class="text-[11px] uppercase tracking-wide text-slate-400 dark:text-slate-500">Total</p>
+                        <p class="text-sm font-bold text-slate-800 dark:text-slate-100" id="payments-summary-total">$0</p>
+                    </div>
+                    <div class="bg-slate-50 dark:bg-slate-900/50 rounded-lg p-2">
+                        <p class="text-[11px] uppercase tracking-wide text-slate-400 dark:text-slate-500" id="payments-summary-paid-label">Pagado</p>
+                        <p class="text-sm font-bold text-emerald-600 dark:text-emerald-400" id="payments-summary-paid">$0</p>
+                    </div>
+                    <div class="bg-slate-50 dark:bg-slate-900/50 rounded-lg p-2">
+                        <p class="text-[11px] uppercase tracking-wide text-slate-400 dark:text-slate-500">Saldo</p>
+                        <p class="text-sm font-bold text-slate-800 dark:text-slate-100" id="payments-summary-balance">$0</p>
+                    </div>
+                </div>
+
+                <p id="payments-settled-note" class="hidden text-center text-sm font-medium text-emerald-600 dark:text-emerald-400 flex items-center justify-center gap-2">
+                    <i class="ph-fill ph-check-circle"></i> Este préstamo ya está saldado.
+                </p>
+
+                <form id="payment-form" class="space-y-3 p-3 rounded-xl border border-slate-200 dark:border-slate-700">
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Valor (COP)</label>
+                            <input type="text" id="payment-amount" inputmode="decimal" class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-slate-100 rounded-lg focus:ring-2 focus:ring-primary outline-none text-sm font-medium" required>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Fecha</label>
+                            <input type="date" id="payment-date" class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-slate-100 dark:[color-scheme:dark] rounded-lg focus:ring-2 focus:ring-primary outline-none text-sm" required>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Nota (Opcional)</label>
+                        <input type="text" id="payment-note" class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-slate-100 rounded-lg focus:ring-2 focus:ring-primary outline-none text-sm" placeholder="Ej. Cuota 3, transferencia Nequi">
+                    </div>
+                    <label class="flex items-start gap-2 cursor-pointer">
+                        <input type="checkbox" id="payment-link-tx" class="mt-0.5 rounded border-slate-300 text-primary focus:ring-primary">
+                        <span class="text-xs text-slate-600 dark:text-slate-300">
+                            Registrar también en el historial de movimientos
+                            <span class="block text-[10px] text-slate-400 dark:text-slate-500" id="payment-link-help"></span>
+                        </span>
+                    </label>
+                    <div class="flex justify-end">
+                        <button type="submit" id="btn-submit-payment" class="bg-primary hover:bg-blue-900 text-white font-medium py-2 px-5 rounded-lg transition-colors shadow flex items-center gap-2 text-sm disabled:opacity-50">
+                            <i class="ph ph-check"></i> <span id="text-submit-payment">Registrar Pago</span>
+                        </button>
+                    </div>
+                </form>
+
+                <div>
+                    <h4 class="text-xs font-bold uppercase tracking-wide text-slate-500 dark:text-slate-400 mb-1">Historial de pagos</h4>
+                    <div id="payments-list" class="divide-y divide-slate-100 dark:divide-slate-700"></div>
+                </div>
             </div>
         </div>
     </div>

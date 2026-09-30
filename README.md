@@ -9,6 +9,7 @@ Funciona en el navegador (PC y móvil), con guardado en la nube (Firebase) o en 
 - Registro de ingresos y gastos, con capítulo, medio de pago, referencia, observaciones y soporte adjunto (imagen o PDF).
 - Regla de distribución **editable**: define tus propios porcentajes (ej. 60/20/20, 50/30/20) desde el panel de configuración (ícono de ajustes junto a "Estado Regla"). Deben sumar 100%.
 - Importación de historial desde CSV.
+- **Préstamos**: lleva los préstamos que pediste (yo debo) y los que hiciste (me deben), con monto total, cuotas, fecha límite y el historial de pagos/abonos. Cada pago puede registrarse también como movimiento del mes (gasto en *Obligaciones Bancarias* o ingreso).
 - Copia de seguridad manual: botón para **descargar** un `.json` con todos tus movimientos y tu regla personalizada, y botón para **restaurarla** cuando quieras. Se genera directamente en tu navegador, sin pasar por ningún servidor intermedio.
 - Gráficos de distribución, gastos por capítulo, ingresos vs. gastos y análisis histórico comparativo.
 - Modo nube (Firebase Auth + Firestore) o Modo Local (localStorage) si no configuras Firebase.
@@ -36,6 +37,7 @@ cm-control-gastos/
 │   ├── comparison.js         # Gráfico comparativo histórico
 │   ├── csvImport.js          # Importación de historial desde CSV
 │   ├── backup.js             # Exportar / restaurar copia de seguridad
+│   ├── loans.js              # Préstamos (yo debo / me deben) y sus pagos
 │   └── main.js                # Punto de entrada, conecta todos los módulos
 └── assets/                    # (opcional) íconos, imágenes propias
 ```
@@ -90,7 +92,7 @@ service cloud.firestore {
 ## Copia de seguridad
 
 En la tarjeta "Copia de Seguridad" puedes:
-- **Descargar Copia de Seguridad**: genera un archivo `.json` con todos tus movimientos y tu regla personalizada, descargado directamente a tu equipo o celular (sin intermediarios).
+- **Descargar Copia de Seguridad**: genera un archivo `.json` con todos tus movimientos, préstamos y tu regla personalizada, descargado directamente a tu equipo o celular (sin intermediarios).
 - **Restaurar Copia**: sube un `.json` generado previamente para recuperar tus datos (reemplaza los movimientos actuales, pide confirmación antes de continuar).
 
 Se recomienda descargar una copia periódicamente, sobre todo si usas Modo Local (los datos viven solo en ese navegador).

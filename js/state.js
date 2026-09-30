@@ -5,6 +5,8 @@ export const state = {
     currentUser: null,
     unsubscribeSnapshot: null,
     allTransactions: [],
+    unsubscribeLoans: null,
+    allLoans: [],
     currentMonth: new Date().toISOString().slice(0, 7), // YYYY-MM
     currentChapterFilter: 'all',
     currentFileBase64: null,

@@ -6,6 +6,7 @@ import { isOfflineMode, appId } from './config.js';
 import { showToast } from './utils.js';
 import { renderDashboard } from './dashboard.js';
 import { renderComparisonChart } from './comparison.js';
+import { loadLoans } from './loans.js';
 
 export const getCollectionRef = () => {
     if (!state.currentUser) return null;
@@ -14,6 +15,7 @@ export const getCollectionRef = () => {
 
 export const loadData = () => {
     if (!state.currentUser) return;
+    loadLoans();
 
     if (isOfflineMode) {
         const stored = localStorage.getItem('ycm_txs');

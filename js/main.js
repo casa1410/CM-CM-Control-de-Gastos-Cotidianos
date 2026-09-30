@@ -8,6 +8,7 @@ import { initAttachments } from './attachments.js';
 import { initTransactions } from './transactions.js';
 import { initCsvImport } from './csvImport.js';
 import { initBackup } from './backup.js';
+import { initLoans } from './loans.js';
 import { initAuth } from './auth.js';
 import { initTheme } from './theme.js';
 
@@ -28,6 +29,7 @@ initAttachments();
 initTransactions();
 initCsvImport();
 initBackup();
+initLoans();
 initRuleSettingsUI(() => { renderDashboard(); renderComparisonChart(); });
 initAuth();
 initTheme(() => { renderDashboard(); renderComparisonChart(); });

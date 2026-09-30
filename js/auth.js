@@ -44,6 +44,7 @@ export const initAuth = () => {
         if (isOfflineMode) { location.reload(); return; }
         signOut(auth);
         if (state.unsubscribeSnapshot) state.unsubscribeSnapshot();
+        if (state.unsubscribeLoans) { state.unsubscribeLoans(); state.unsubscribeLoans = null; }
     });
 
     if (!isOfflineMode) {
