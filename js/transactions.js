@@ -3,7 +3,7 @@ import { addDoc, updateDoc, deleteDoc, doc } from "https://www.gstatic.com/fireb
 import { state } from './state.js';
 import { db } from './firebase.js';
 import { isOfflineMode, appId } from './config.js';
-import { parseAmount, showToast, attachAmountFormatter } from './utils.js';
+import { parseAmount, showToast, attachAmountFormatter, isoToDateInput, dateToIso } from './utils.js';
 import { resetFileInput, setExistingAttachmentLabel } from './attachments.js';
 import { getCollectionRef, loadData } from './data.js';
 
@@ -58,6 +58,12 @@ export const initTransactions = () => {
         const refNumber = document.getElementById('tx-ref').value;
         const referenceComplete = medio === 'Efectivo' ? 'Efectivo' : `${medio} ${refNumber}`.trim();
 
+        // Fecha opcional: vacía = hoy (o la original al editar). Si no cambió al editar, se conserva la hora original.
+        const originalDate = txId ? state.allTransactions.find(t => t.id === txId).date : null;
+        const dateInput = document.getElementById('tx-date').value;
+        let date = originalDate || new Date().toISOString();
+        if (dateInput && !(originalDate && dateInput === isoToDateInput(originalDate))) date = dateToIso(dateInput);
+
         const record = {
             type: type,
             description: document.getElementById('tx-desc').value,
@@ -65,7 +71,7 @@ export const initTransactions = () => {
             chapter: document.getElementById('tx-chapter').value,
             reference: referenceComplete,
             observation: document.getElementById('tx-obs').value || '',
-            date: txId ? state.allTransactions.find(t => t.id === txId).date : new Date().toISOString(),
+            date,
             ruleClass: type === 'expense' ? document.getElementById('tx-rule').value : 'income'
         };
 
@@ -78,6 +84,12 @@ export const initTransactions = () => {
                 record.fileAttachment = existingTx.fileAttachment;
                 record.fileType = existingTx.fileType;
             }
+        }
+
+        // Aviso si el registro queda en un mes distinto al que se está viendo.
+        if (isoToDateInput(date).slice(0, 7) !== state.currentMonth) {
+            const monthName = new Date(date).toLocaleDateString('es-CO', { month: 'long', year: 'numeric' });
+            showToast(`El registro quedó en ${monthName}`, 'info');
         }
 
         // MODO LOCAL
@@ -131,6 +143,7 @@ export const initTransactions = () => {
 
         document.getElementById('tx-chapter').value = tx.chapter;
         document.getElementById('tx-obs').value = tx.observation || '';
+        document.getElementById('tx-date').value = tx.date ? isoToDateInput(tx.date) : '';
 
         const knownMedios = ['Efectivo', 'Nequi', 'DaviPlata', 'Banco', 'Llave', 'Otro'];
         let foundMedio = 'Otro';

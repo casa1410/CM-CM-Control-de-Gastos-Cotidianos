@@ -44,11 +44,26 @@ export const formatAmountForInput = (amount) => {
     return formatted;
 };
 
+// Fecha local de hoy en formato "YYYY-MM-DD" (el que usan los inputs type="date").
+export const todayStr = () => {
+    const now = new Date();
+    return new Date(now.getTime() - now.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
+};
+
+// ISO -> "YYYY-MM-DD" en hora local.
+export const isoToDateInput = (iso) => {
+    const d = new Date(iso);
+    return new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
+};
+
+// "YYYY-MM-DD" -> ISO. Si es hoy usa la hora actual; si no, mediodía local para no cambiar de día por zona horaria.
+export const dateToIso = (ymd) => ymd === todayStr() ? new Date().toISOString() : new Date(`${ymd}T12:00:00`).toISOString();
+
 export const escapeHtml = (text) => String(text ?? '')
     .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
 
-export const showToast =(message, type = 'info') => {
+export const showToast = (message, type = 'info') => {
     const container = document.getElementById('toast-container');
     const toast = document.createElement('div');
     const bgColor = type === 'error' ? 'bg-rose-500' : type === 'success' ? 'bg-emerald-500' : 'bg-secondary';

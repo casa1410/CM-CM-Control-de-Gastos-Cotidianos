@@ -4,7 +4,7 @@ import { collection, onSnapshot, query, addDoc, updateDoc, deleteDoc, doc } from
 import { state } from './state.js';
 import { db } from './firebase.js';
 import { isOfflineMode, appId } from './config.js';
-import { formatCOP, parseAmount, showToast, attachAmountFormatter, formatAmountForInput, escapeHtml } from './utils.js';
+import { formatCOP, parseAmount, showToast, attachAmountFormatter, formatAmountForInput, escapeHtml, todayStr, dateToIso } from './utils.js';
 import { renderDashboard } from './dashboard.js';
 import { renderComparisonChart } from './comparison.js';
 
@@ -28,12 +28,6 @@ export const loanBalance = (loan) => Math.max(0, (loan.amount || 0) - loanPaid(l
 export const isSettled = (loan) => loanPaid(loan) >= (loan.amount || 0) - 0.005;
 
 // ---------- Fechas ----------
-const todayStr = () => {
-    const now = new Date();
-    return new Date(now.getTime() - now.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
-};
-// "YYYY-MM-DD" -> ISO. Si es hoy usa la hora actual; si no, mediodía local para no cambiar de día por zona horaria.
-const dateToIso = (ymd) => ymd === todayStr() ? new Date().toISOString() : new Date(`${ymd}T12:00:00`).toISOString();
 const formatDate = (value) => {
     if (!value) return '';
     const d = new Date(value.length === 10 ? `${value}T12:00:00` : value);
