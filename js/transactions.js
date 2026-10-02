@@ -13,6 +13,8 @@ const resetFormState = () => {
     document.getElementById('tx-form').reset();
     document.getElementById('tx-id').value = '';
     document.getElementById('text-submit-tx').innerText = 'Guardar Registro';
+    document.getElementById('tx-form-title').innerText = 'Registrar Movimiento';
+    document.getElementById('tx-form-card').classList.remove('ring-2', 'ring-amber-400');
     document.getElementById('btn-cancel-edit').classList.add('hidden');
     document.getElementById('container-ref').style.display = 'none';
     document.getElementById('tx-medio').value = 'Efectivo';
@@ -170,7 +172,12 @@ export const initTransactions = () => {
 
         document.getElementById('text-submit-tx').innerText = 'Actualizar';
         document.getElementById('btn-cancel-edit').classList.remove('hidden');
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        // Lleva al formulario (el contenedor con scroll es <main>, no la ventana) y lo resalta mientras se edita.
+        document.getElementById('tx-form-title').innerText = 'Editar Movimiento';
+        const formCard = document.getElementById('tx-form-card');
+        formCard.classList.add('ring-2', 'ring-amber-400');
+        formCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        document.getElementById('tx-desc').focus({ preventScroll: true });
     };
 
     window.deleteTx = async (id) => {

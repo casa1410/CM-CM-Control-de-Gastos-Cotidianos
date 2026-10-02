@@ -48,7 +48,7 @@ export const renderComparisonChart = () => {
     } else if (metric === 'chapters') {
         const allChapters = new Set();
         sortedMonths.forEach(m => Object.keys(dataByMonth[m].chapters).forEach(c => allChapters.add(c)));
-        const chapterColors = ['#8b5cf6', '#ec4899', '#f43f5e', '#f97316', '#eab308', '#22c55e', '#0ea5e9', '#64748b', '#14b8a6'];
+        const chapterColors = ['#8b5cf6', '#ec4899', '#f43f5e', '#f97316', '#eab308', '#22c55e', '#0ea5e9', '#64748b', '#14b8a6', '#d946ef'];
         let colorIdx = 0;
         Array.from(allChapters).forEach(chap => {
             if (chap === 'Ingreso') return;

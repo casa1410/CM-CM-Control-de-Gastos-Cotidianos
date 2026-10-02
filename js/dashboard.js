@@ -70,7 +70,7 @@ const updateCharts = (needs, wants, savings, inc, exp, chapterTotals) => {
     const ctxChapters = document.getElementById('chart-chapters').getContext('2d');
     if (state.charts.chapters) state.charts.chapters.destroy();
     const chapterLabels = Object.keys(chapterTotals); const chapterData = Object.values(chapterTotals);
-    const chapterColors = ['#8b5cf6', '#ec4899', '#f43f5e', '#f97316', '#eab308', '#22c55e', '#0ea5e9', '#64748b', '#14b8a6'];
+    const chapterColors = ['#8b5cf6', '#ec4899', '#f43f5e', '#f97316', '#eab308', '#22c55e', '#0ea5e9', '#64748b', '#14b8a6', '#d946ef'];
     state.charts.chapters = new Chart(ctxChapters, {
         type: 'bar',
         data: { labels: chapterLabels.length > 0 ? chapterLabels : ['Sin datos'], datasets: [{ label: 'Gasto por Capítulo', data: chapterData.length > 0 ? chapterData : [0], backgroundColor: chapterColors, borderRadius: 4 }] },

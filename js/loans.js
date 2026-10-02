@@ -97,6 +97,31 @@ const addLinkedTransaction = async (record) => {
     return ref.id;
 };
 
+const updateLinkedTransaction = async (txId, changes) => {
+    if (isOfflineMode) {
+        const idx = state.allTransactions.findIndex(t => t.id === txId);
+        if (idx === -1) return;
+        state.allTransactions[idx] = { ...state.allTransactions[idx], ...changes };
+        localStorage.setItem('ycm_txs', JSON.stringify(state.allTransactions));
+        renderDashboard();
+        renderComparisonChart();
+        return;
+    }
+    await updateDoc(doc(db, ...userPath(), 'transactions', txId), changes);
+};
+
+// Gasto que representa la salida del dinero al prestar (solo préstamos "Yo presté").
+const disbursementRecord = (loan, ruleClass) => ({
+    type: 'expense',
+    description: `Préstamo a ${loan.person}`,
+    amount: loan.amount,
+    chapter: 'Prestamos',
+    reference: 'Préstamo',
+    observation: loan.observation || '',
+    date: dateToIso(loan.startDate),
+    ruleClass
+});
+
 const deleteLinkedTransaction = async (txId) => {
     if (isOfflineMode) {
         state.allTransactions = state.allTransactions.filter(t => t.id !== txId);
@@ -221,6 +246,16 @@ const resetLoanForm = () => {
     document.getElementById('loan-start').value = todayStr();
     document.getElementById('loan-form-title').innerText = 'Nuevo préstamo';
     document.getElementById('text-submit-loan').innerText = 'Guardar Préstamo';
+    updateDisbursementVisibility();
+};
+
+// La opción de registrar la salida del dinero aplica a préstamos "Yo presté" que aún no la tienen registrada.
+const updateDisbursementVisibility = () => {
+    const editing = state.allLoans.find(l => l.id === document.getElementById('loan-id').value);
+    const isNewLent = document.getElementById('loan-direction').value === 'lent' && !(editing && editing.disbursementTxId);
+    const checked = document.getElementById('loan-register-disbursement').checked;
+    document.getElementById('loan-disbursement-container').classList.toggle('hidden', !isNewLent);
+    document.getElementById('loan-disbursement-rule-container').classList.toggle('hidden', !checked);
 };
 
 const showLoanForm = () => {
@@ -294,8 +329,8 @@ const openPaymentsModal = (loanId) => {
     document.getElementById('payment-date').value = todayStr();
     const suggestion = suggestedPayment(loan);
     paymentAmountInput().value = suggestion > 0 ? formatAmountForInput(suggestion) : '';
-    // Por defecto, los pagos de lo que debo cuentan como gasto; los abonos que recibo no se suman como ingreso.
-    document.getElementById('payment-link-tx').checked = loan.direction === 'borrowed';
+    // Por defecto, los pagos de lo que debo cuentan como gasto y los abonos que recibo como ingreso.
+    document.getElementById('payment-link-tx').checked = true;
     renderPaymentsModal();
 
     const modal = document.getElementById('payments-modal');
@@ -330,6 +365,8 @@ export const initLoans = () => {
         else hideLoanForm();
     });
     document.getElementById('btn-cancel-loan').addEventListener('click', hideLoanForm);
+    document.getElementById('loan-direction').addEventListener('change', updateDisbursementVisibility);
+    document.getElementById('loan-register-disbursement').addEventListener('change', updateDisbursementVisibility);
 
     document.getElementById('btn-goto-loans').addEventListener('click', () => {
         document.getElementById('loans-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -364,6 +401,21 @@ export const initLoans = () => {
         }
 
         try {
+            const existing = id ? state.allLoans.find(l => l.id === id) : null;
+            const hasDisbursement = existing && existing.disbursementTxId;
+            if (!hasDisbursement && data.direction === 'lent' && document.getElementById('loan-register-disbursement').checked) {
+                data.disbursementRuleClass = document.getElementById('loan-disbursement-rule').value;
+                data.disbursementTxId = await addLinkedTransaction(disbursementRecord(data, data.disbursementRuleClass));
+            } else if (hasDisbursement) {
+                // Mantiene sincronizado el gasto de la salida del dinero con los datos del préstamo.
+                if (data.direction === 'lent') {
+                    await updateLinkedTransaction(existing.disbursementTxId, disbursementRecord(data, existing.disbursementRuleClass || 'needs'))
+                        .catch(() => { /* el movimiento pudo haberse borrado desde el historial */ });
+                } else {
+                    await deleteLinkedTransaction(existing.disbursementTxId).catch(() => {});
+                    data.disbursementTxId = null;
+                }
+            }
             await saveLoan(id, data);
             showToast(id ? 'Préstamo actualizado' : 'Préstamo registrado', 'success');
             hideLoanForm();
@@ -440,6 +492,7 @@ export const initLoans = () => {
         document.getElementById('loan-obs').value = loan.observation || '';
         document.getElementById('loan-form-title').innerText = 'Editar préstamo';
         document.getElementById('text-submit-loan').innerText = 'Actualizar';
+        updateDisbursementVisibility();
         showLoanForm();
         document.getElementById('loans-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
     };
