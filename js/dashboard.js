@@ -1,6 +1,7 @@
 // Renderizado del dashboard: resumen, barras de la regla, tabla y gráficos mensuales.
 import { state } from './state.js';
 import { formatCOP } from './utils.js';
+import { renderSavingsSummary } from './savings.js';
 
 // Colores fijos por categoría (coinciden con la leyenda del gráfico "Distribución de la Regla").
 const BAR_COLORS = { needs: 'bg-emerald-500', wants: 'bg-amber-400', savings: 'bg-secondary' };
@@ -173,4 +174,5 @@ export const renderDashboard = () => {
     updateBar('wants', spentWants, limitWants);
     updateBar('savings', spentSavings, limitSavings);
     updateCharts(spentNeeds, spentWants, spentSavings, totalIncome, totalExpense, chapterTotals);
+    renderSavingsSummary();
 };

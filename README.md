@@ -11,6 +11,7 @@ Funciona en el navegador (PC y móvil), con guardado en la nube (Firebase) o en 
 - Importación de historial desde CSV.
 - **Préstamos**: lleva los préstamos que pediste (yo debo) y los que hiciste (me deben), con monto total, cuotas, fecha límite y el historial de pagos/abonos. Cada pago puede registrarse también como movimiento del mes (gasto en *Obligaciones Bancarias* o ingreso), y al prestar dinero su salida puede registrarse como gasto en el capítulo *Préstamos*.
 - Copia de seguridad manual: botón para **descargar** un `.json` con todos tus movimientos y tu regla personalizada, y botón para **restaurarla** cuando quieras. Se genera directamente en tu navegador, sin pasar por ningún servidor intermedio.
+- **Resumen de ahorro**: cuánto ahorraste cada mes (lo registrado como Ahorro/Inversión + el saldo sobrante) y el total acumulado.
 - Gráficos de distribución, gastos por capítulo, ingresos vs. gastos y análisis histórico comparativo.
 - Modo nube (Firebase Auth + Firestore) o Modo Local (localStorage) si no configuras Firebase.
 - Diseño responsivo: se adapta a pantallas de PC, tablet y móvil.
@@ -35,6 +36,7 @@ cm-control-gastos/
 │   ├── transactions.js       # Crear, editar y eliminar movimientos
 │   ├── dashboard.js          # Resumen, barras de la regla, tabla y gráficos del mes
 │   ├── comparison.js         # Gráfico comparativo histórico
+│   ├── savings.js            # Resumen de ahorro mensual y acumulado
 │   ├── csvImport.js          # Importación de historial desde CSV
 │   ├── backup.js             # Exportar / restaurar copia de seguridad
 │   ├── loans.js              # Préstamos (yo debo / me deben) y sus pagos
