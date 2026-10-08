@@ -255,6 +255,7 @@
                                         <select id="tx-type" class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-slate-100 rounded-lg focus:ring-2 focus:ring-primary outline-none text-sm" required>
                                             <option value="expense">Gasto (Salida)</option>
                                             <option value="income">Ingreso (Depósito)</option>
+                                            <option value="saving">Ahorro / Inversión (Dinero apartado)</option>
                                         </select>
                                     </div>
                                     <div id="container-rule">
@@ -262,7 +263,6 @@
                                         <select id="tx-rule" class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-slate-100 rounded-lg focus:ring-2 focus:ring-primary outline-none text-sm">
                                             <option value="needs">Necesidad</option>
                                             <option value="wants">Deseo</option>
-                                            <option value="savings">Ahorro/Inversión</option>
                                         </select>
                                     </div>
                                 </div>
@@ -292,6 +292,7 @@
                                             <option value="Salud">Salud</option>
                                             <option value="Aseo">Aseo</option>
                                             <option value="Otros">Otros</option>
+                                            <option value="Ahorro">-- Es un Ahorro --</option>
                                             <option value="Ingreso">-- Es un Ingreso --</option>
                                         </select>
                                     </div>
@@ -392,32 +393,30 @@
                     <h2 class="text-lg font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2 mb-1">
                         <i class="ph-fill ph-piggy-bank text-primary"></i> Resumen de Ahorro
                     </h2>
-                    <p class="text-xs text-slate-500 dark:text-slate-400 mb-4">Ahorro del mes = lo registrado como Ahorro/Inversión + el saldo que sobró (ingresos menos gastos). El acumulado suma mes a mes; los meses con saldo negativo restan.</p>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 mb-4">Solo cuenta lo que registres con el tipo de movimiento "Ahorro / Inversión". El acumulado suma lo ahorrado mes a mes.</p>
 
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
                         <div class="rounded-xl p-4 border-l-4 border-l-emerald-500 bg-slate-50 dark:bg-slate-800/60">
                             <p class="text-sm font-medium text-slate-500 dark:text-slate-400">Total Acumulado</p>
-                            <h3 class="text-2xl font-bold mt-1" id="savings-accumulated">$0</h3>
+                            <h3 class="text-2xl font-bold mt-1 text-slate-800 dark:text-slate-100" id="savings-accumulated">$0</h3>
                         </div>
                         <div class="rounded-xl p-4 border-l-4 border-l-secondary bg-slate-50 dark:bg-slate-800/60">
                             <p class="text-sm font-medium text-slate-500 dark:text-slate-400" id="savings-current-label">Ahorro del mes</p>
-                            <h3 class="text-2xl font-bold mt-1" id="savings-current">$0</h3>
+                            <h3 class="text-2xl font-bold mt-1 text-slate-800 dark:text-slate-100" id="savings-current">$0</h3>
                         </div>
                         <div class="rounded-xl p-4 border-l-4 border-l-amber-400 bg-slate-50 dark:bg-slate-800/60">
                             <p class="text-sm font-medium text-slate-500 dark:text-slate-400">Promedio Mensual</p>
-                            <h3 class="text-2xl font-bold mt-1" id="savings-average">$0</h3>
-                            <p class="text-xs text-slate-400 dark:text-slate-500 mt-0.5" id="savings-months-count">0 mes(es) con movimientos</p>
+                            <h3 class="text-2xl font-bold mt-1 text-slate-800 dark:text-slate-100" id="savings-average">$0</h3>
+                            <p class="text-xs text-slate-400 dark:text-slate-500 mt-0.5" id="savings-months-count">0 mes(es) con ahorro</p>
                         </div>
                     </div>
 
                     <div class="overflow-x-auto max-h-96 overflow-y-auto">
-                        <table class="w-full text-left border-collapse min-w-[600px]">
+                        <table class="w-full text-left border-collapse">
                             <thead class="sticky top-0">
                                 <tr class="bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-xs uppercase tracking-wider border-b border-slate-200 dark:border-slate-700">
                                     <th class="p-3 font-semibold rounded-tl-lg">Mes</th>
-                                    <th class="p-3 font-semibold text-right">Ahorro/Inversión</th>
-                                    <th class="p-3 font-semibold text-right">Saldo Sobrante</th>
-                                    <th class="p-3 font-semibold text-right">Total del Mes</th>
+                                    <th class="p-3 font-semibold text-right">Ahorrado</th>
                                     <th class="p-3 font-semibold text-right rounded-tr-lg">Acumulado</th>
                                 </tr>
                             </thead>
@@ -425,7 +424,7 @@
                         </table>
                         <div id="savings-empty-state" class="hidden text-center py-8 text-slate-500 dark:text-slate-400">
                             <i class="ph ph-piggy-bank text-4xl mb-2 opacity-50"></i>
-                            <p>Aún no hay movimientos para calcular el ahorro.</p>
+                            <p>Aún no has registrado ahorros. Usa el tipo de movimiento "Ahorro / Inversión".</p>
                         </div>
                     </div>
                 </div>
@@ -463,6 +462,7 @@
                             <option value="Salud">Salud</option>
                             <option value="Aseo">Aseo</option>
                             <option value="Otros">Otros</option>
+                            <option value="Ahorro">Ahorro</option>
                             <option value="Ingreso">Ingreso</option>
                         </select>
                     </div>
@@ -580,7 +580,6 @@
                                     <select id="loan-disbursement-rule" class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-slate-100 rounded-lg focus:ring-2 focus:ring-primary outline-none text-sm">
                                         <option value="needs">Necesidad</option>
                                         <option value="wants">Deseo</option>
-                                        <option value="savings">Ahorro/Inversión</option>
                                     </select>
                                 </div>
                             </div>

@@ -19,6 +19,7 @@ const resetFormState = () => {
     document.getElementById('container-ref').style.display = 'none';
     document.getElementById('tx-medio').value = 'Efectivo';
     resetFileInput();
+    document.getElementById('tx-type').dispatchEvent(new Event('change'));
 };
 
 export const initTransactions = () => {
@@ -30,9 +31,12 @@ export const initTransactions = () => {
         if (e.target.value === 'income') {
             ruleContainer.style.display = 'none';
             chapterSelect.value = 'Ingreso';
+        } else if (e.target.value === 'saving') {
+            ruleContainer.style.display = 'none';
+            chapterSelect.value = 'Ahorro';
         } else {
             ruleContainer.style.display = 'block';
-            if (chapterSelect.value === 'Ingreso') chapterSelect.value = 'Hogar';
+            if (chapterSelect.value === 'Ingreso' || chapterSelect.value === 'Ahorro') chapterSelect.value = 'Hogar';
         }
     });
 
@@ -50,7 +54,9 @@ export const initTransactions = () => {
         e.preventDefault();
         if (!state.currentUser) return;
 
-        const type = document.getElementById('tx-type').value;
+        // "Ahorro" se guarda como salida (sale del saldo disponible) con clasificación de regla 'savings'.
+        const formType = document.getElementById('tx-type').value;
+        const type = formType === 'income' ? 'income' : 'expense';
         const amountVal = parseAmount(document.getElementById('tx-amount').value);
 
         if (isNaN(amountVal) || amountVal <= 0) return showToast('Ingrese un valor válido', 'error');
@@ -74,7 +80,7 @@ export const initTransactions = () => {
             reference: referenceComplete,
             observation: document.getElementById('tx-obs').value || '',
             date,
-            ruleClass: type === 'expense' ? document.getElementById('tx-rule').value : 'income'
+            ruleClass: formType === 'income' ? 'income' : formType === 'saving' ? 'savings' : document.getElementById('tx-rule').value
         };
 
         if (state.currentFileBase64) {
@@ -123,6 +129,7 @@ export const initTransactions = () => {
                 e.target.reset();
                 document.getElementById('container-ref').style.display = 'none';
                 resetFileInput();
+                document.getElementById('tx-type').dispatchEvent(new Event('change'));
             }
         } catch (error) { showToast('Error al procesar registro', 'error'); }
     });
@@ -132,10 +139,10 @@ export const initTransactions = () => {
         if (!tx) return;
 
         document.getElementById('tx-id').value = tx.id;
-        document.getElementById('tx-type').value = tx.type;
+        document.getElementById('tx-type').value = tx.ruleClass === 'savings' ? 'saving' : tx.type;
         document.getElementById('tx-type').dispatchEvent(new Event('change'));
 
-        if (tx.type === 'expense') document.getElementById('tx-rule').value = tx.ruleClass;
+        if (tx.type === 'expense' && tx.ruleClass !== 'savings') document.getElementById('tx-rule').value = tx.ruleClass;
         document.getElementById('tx-desc').value = tx.description;
 
         const parts = tx.amount.toString().split('.');

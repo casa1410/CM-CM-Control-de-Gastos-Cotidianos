@@ -47,7 +47,7 @@ const exportExcel = () => {
         .sort((a, b) => new Date(a.date) - new Date(b.date))
         .map(tx => ({
             Fecha: tx.date ? new Date(tx.date).toLocaleDateString('es-CO') : '',
-            Tipo: tx.type === 'income' ? 'Ingreso' : 'Gasto',
+            Tipo: tx.type === 'income' ? 'Ingreso' : tx.ruleClass === 'savings' ? 'Ahorro' : 'Gasto',
             Descripción: tx.description || '',
             Capítulo: tx.chapter || '',
             Clasificación: RULE_LABELS[tx.ruleClass] || tx.ruleClass || '',

@@ -129,7 +129,9 @@ export const renderDashboard = () => {
 
     tableTx.forEach(tx => {
         const dateStr = new Date(tx.date).toLocaleDateString('es-CO', { day: '2-digit', month: 'short' });
-        const icon = tx.type === 'income' ? '<i class="ph-fill ph-arrow-circle-up text-emerald-500"></i>' : '<i class="ph-fill ph-arrow-circle-down text-rose-500"></i>';
+        const icon = tx.type === 'income' ? '<i class="ph-fill ph-arrow-circle-up text-emerald-500"></i>'
+            : tx.ruleClass === 'savings' ? '<i class="ph-fill ph-piggy-bank text-secondary"></i>'
+            : '<i class="ph-fill ph-arrow-circle-down text-rose-500"></i>';
         const ruleBadge = tx.type === 'income' ?
             `<span class="bg-blue-100 dark:bg-blue-500/20 text-blue-700 dark:text-blue-300 px-2 py-0.5 rounded text-xs font-medium">Ingreso</span>` :
             `<span class="bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 px-2 py-0.5 rounded text-xs font-medium">${tx.ruleClass === 'needs' ? state.rule.needs + '% Nec.' : tx.ruleClass === 'wants' ? state.rule.wants + '% Des.' : state.rule.savings + '% Aho.'} - ${tx.chapter}</span>`;
