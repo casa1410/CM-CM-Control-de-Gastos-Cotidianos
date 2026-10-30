@@ -271,10 +271,10 @@ const hideLoanForm = () => {
 // ---------- Modal de pagos ----------
 const paymentAmountInput = () => document.getElementById('payment-amount');
 
+// Solo se sugiere un valor cuando hay cuotas; sin cuotas el campo queda vacío para no registrar el saldo completo por error.
 const suggestedPayment = (loan) => {
-    const balance = loanBalance(loan);
-    if (loan.installments > 0) return Math.min(balance, loan.amount / loan.installments);
-    return balance;
+    if (!(loan.installments > 0)) return 0;
+    return Math.min(loanBalance(loan), loan.amount / loan.installments);
 };
 
 const renderPaymentsModal = () => {
@@ -340,6 +340,7 @@ const openPaymentsModal = (loanId) => {
         modal.classList.remove('opacity-0', 'pointer-events-none');
         card.classList.remove('scale-95');
         card.classList.add('scale-100');
+        if (!isSettled(loan)) paymentAmountInput().select();
     }, 10);
 };
 
@@ -431,6 +432,7 @@ export const initLoans = () => {
         if (isNaN(amount) || amount <= 0) return showToast('Ingrese un valor válido', 'error');
         const balance = loanBalance(loan);
         if (amount > balance + 0.005) return showToast(`El valor supera el saldo pendiente (${formatCOP(balance)})`, 'error');
+        if (amount >= balance - 0.005 && !confirm(`Este valor (${formatCOP(amount)}) salda el préstamo completo. ¿Deseas registrarlo?`)) return;
 
         const isBorrowed = loan.direction === 'borrowed';
         const dateIso = dateToIso(document.getElementById('payment-date').value || todayStr());
