@@ -5,6 +5,7 @@ import { renderSavingsSummary } from './savings.js';
 
 // Colores fijos por categoría (coinciden con la leyenda del gráfico "Distribución de la Regla").
 const BAR_COLORS = { needs: 'bg-emerald-500', wants: 'bg-amber-400', savings: 'bg-secondary' };
+const RULE_SHORT_LABELS = { needs: 'Necesidades', wants: 'Deseos', savings: 'Ahorro/Inv.' };
 
 const updateBar = (idPrefix, spent, limit) => {
     const pct = limit > 0 ? (spent / limit) * 100 : (spent > 0 ? 100 : 0);
@@ -106,10 +107,14 @@ export const renderDashboard = () => {
     const filteredTx = state.allTransactions.filter(tx => tx.date && tx.date.startsWith(state.currentMonth));
     let totalIncome = 0, totalExpense = 0, spentNeeds = 0, spentWants = 0, spentSavings = 0;
     const chapterTotals = {};
+    // Ingresos con destino fijo: no se reparten con la regla, se suman completos al límite de su categoría.
+    const earmarked = { needs: 0, wants: 0, savings: 0 };
 
     filteredTx.forEach(tx => {
-        if (tx.type === 'income') totalIncome += tx.amount;
-        else {
+        if (tx.type === 'income') {
+            totalIncome += tx.amount;
+            if (earmarked[tx.incomeTarget] !== undefined) earmarked[tx.incomeTarget] += tx.amount;
+        } else {
             totalExpense += tx.amount;
             if (tx.ruleClass === 'needs') spentNeeds += tx.amount;
             else if (tx.ruleClass === 'wants') spentWants += tx.amount;
@@ -133,7 +138,7 @@ export const renderDashboard = () => {
             : tx.ruleClass === 'savings' ? '<i class="ph-fill ph-piggy-bank text-secondary"></i>'
             : '<i class="ph-fill ph-arrow-circle-down text-rose-500"></i>';
         const ruleBadge = tx.type === 'income' ?
-            `<span class="bg-blue-100 dark:bg-blue-500/20 text-blue-700 dark:text-blue-300 px-2 py-0.5 rounded text-xs font-medium">Ingreso</span>` :
+            `<span class="bg-blue-100 dark:bg-blue-500/20 text-blue-700 dark:text-blue-300 px-2 py-0.5 rounded text-xs font-medium">Ingreso${RULE_SHORT_LABELS[tx.incomeTarget] ? ` · Solo ${RULE_SHORT_LABELS[tx.incomeTarget]}` : ''}</span>` :
             `<span class="bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 px-2 py-0.5 rounded text-xs font-medium">${tx.ruleClass === 'needs' ? state.rule.needs + '% Nec.' : tx.ruleClass === 'wants' ? state.rule.wants + '% Des.' : state.rule.savings + '% Aho.'} - ${tx.chapter}</span>`;
 
         const attachmentBtn = tx.fileAttachment ?
@@ -168,9 +173,15 @@ export const renderDashboard = () => {
     document.getElementById('total-balance').innerText = formatCOP(balance);
     document.getElementById('total-balance').className = `text-2xl font-bold mt-1 ${balance < 0 ? 'text-rose-500' : 'text-slate-800 dark:text-slate-100'}`;
 
-    const limitNeeds = totalIncome * (state.rule.needs / 100);
-    const limitWants = totalIncome * (state.rule.wants / 100);
-    const limitSavings = totalIncome * (state.rule.savings / 100);
+    const ruleIncome = totalIncome - earmarked.needs - earmarked.wants - earmarked.savings;
+    const limitNeeds = ruleIncome * (state.rule.needs / 100) + earmarked.needs;
+    const limitWants = ruleIncome * (state.rule.wants / 100) + earmarked.wants;
+    const limitSavings = ruleIncome * (state.rule.savings / 100) + earmarked.savings;
+
+    ['needs', 'wants', 'savings'].forEach(key => {
+        const note = earmarked[key] > 0 ? `Incluye ${formatCOP(earmarked[key])} de ingresos destinados` : (key === 'savings' ? 'Sugerido según ingresos' : '');
+        document.getElementById(`earmark-${key}`).innerText = note;
+    });
 
     updateBar('needs', spentNeeds, limitNeeds);
     updateBar('wants', spentWants, limitWants);

@@ -7,6 +7,7 @@ Funciona en el navegador (PC y móvil), con guardado en la nube (Firebase) o en 
 ## Características
 
 - Registro de ingresos y gastos, con capítulo, medio de pago, referencia, observaciones y soporte adjunto (imagen o PDF).
+- Ingresos con **destino fijo**: un ingreso puede marcarse como "Solo para Necesidades" (o Deseos / Ahorro) para que se sume completo a esa categoría en vez de repartirse según la regla (ej. dinero que te dan solo para pagar servicios).
 - Regla de distribución **editable**: define tus propios porcentajes (ej. 60/20/20, 50/30/20) desde el panel de configuración (ícono de ajustes junto a "Estado Regla"). Deben sumar 100%.
 - Importación de historial desde CSV.
 - **Préstamos**: lleva los préstamos que pediste (yo debo) y los que hiciste (me deben), con monto total, cuotas, fecha límite y el historial de pagos/abonos. Cada pago puede registrarse también como movimiento del mes (gasto en *Obligaciones Bancarias* o ingreso), y al prestar dinero su salida puede registrarse como gasto en el capítulo *Préstamos*.

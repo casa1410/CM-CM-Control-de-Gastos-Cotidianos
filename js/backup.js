@@ -41,6 +41,7 @@ const exportBackup = () => {
 };
 
 const RULE_LABELS = { needs: 'Necesidad', wants: 'Deseo', savings: 'Ahorro/Inversión', income: 'Ingreso' };
+const INCOME_TARGET_LABELS = { needs: 'Ingreso (solo Necesidades)', wants: 'Ingreso (solo Deseos)', savings: 'Ingreso (solo Ahorro/Inversión)' };
 
 const exportExcel = () => {
     const rows = [...state.allTransactions]
@@ -50,7 +51,7 @@ const exportExcel = () => {
             Tipo: tx.type === 'income' ? 'Ingreso' : tx.ruleClass === 'savings' ? 'Ahorro' : 'Gasto',
             Descripción: tx.description || '',
             Capítulo: tx.chapter || '',
-            Clasificación: RULE_LABELS[tx.ruleClass] || tx.ruleClass || '',
+            Clasificación: (tx.type === 'income' && INCOME_TARGET_LABELS[tx.incomeTarget]) || RULE_LABELS[tx.ruleClass] || tx.ruleClass || '',
             Valor: tx.amount || 0,
             'Medio/Referencia': tx.reference || '',
             Observaciones: tx.observation || ''

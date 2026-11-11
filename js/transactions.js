@@ -28,6 +28,7 @@ export const initTransactions = () => {
     document.getElementById('tx-type').addEventListener('change', (e) => {
         const ruleContainer = document.getElementById('container-rule');
         const chapterSelect = document.getElementById('tx-chapter');
+        document.getElementById('container-income-target').style.display = e.target.value === 'income' ? 'block' : 'none';
         if (e.target.value === 'income') {
             ruleContainer.style.display = 'none';
             chapterSelect.value = 'Ingreso';
@@ -80,7 +81,9 @@ export const initTransactions = () => {
             reference: referenceComplete,
             observation: document.getElementById('tx-obs').value || '',
             date,
-            ruleClass: formType === 'income' ? 'income' : formType === 'saving' ? 'savings' : document.getElementById('tx-rule').value
+            ruleClass: formType === 'income' ? 'income' : formType === 'saving' ? 'savings' : document.getElementById('tx-rule').value,
+            // Destino del ingreso: 'rule' se reparte según la regla; 'needs'/'wants'/'savings' va completo a esa categoría.
+            incomeTarget: formType === 'income' ? document.getElementById('tx-income-target').value : null
         };
 
         if (state.currentFileBase64) {
@@ -143,6 +146,7 @@ export const initTransactions = () => {
         document.getElementById('tx-type').dispatchEvent(new Event('change'));
 
         if (tx.type === 'expense' && tx.ruleClass !== 'savings') document.getElementById('tx-rule').value = tx.ruleClass;
+        if (tx.type === 'income') document.getElementById('tx-income-target').value = tx.incomeTarget || 'rule';
         document.getElementById('tx-desc').value = tx.description;
 
         const parts = tx.amount.toString().split('.');

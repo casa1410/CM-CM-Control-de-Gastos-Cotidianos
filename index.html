@@ -181,7 +181,10 @@
                             <div class="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-3 mb-1">
                                 <div id="bar-needs" class="bg-emerald-500 h-3 rounded-full transition-all duration-500" style="width: 0%"></div>
                             </div>
-                            <p class="text-xs text-right text-slate-400 dark:text-slate-500" id="pct-needs">0%</p>
+                            <div class="flex justify-between items-center gap-2">
+                                <p class="text-[10px] text-slate-400 dark:text-slate-500" id="earmark-needs"></p>
+                                <p class="text-xs text-right text-slate-400 dark:text-slate-500" id="pct-needs">0%</p>
+                            </div>
                         </div>
 
                         <!-- Deseos -->
@@ -193,7 +196,10 @@
                             <div class="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-3 mb-1">
                                 <div id="bar-wants" class="bg-emerald-500 h-3 rounded-full transition-all duration-500" style="width: 0%"></div>
                             </div>
-                            <p class="text-xs text-right text-slate-400 dark:text-slate-500" id="pct-wants">0%</p>
+                            <div class="flex justify-between items-center gap-2">
+                                <p class="text-[10px] text-slate-400 dark:text-slate-500" id="earmark-wants"></p>
+                                <p class="text-xs text-right text-slate-400 dark:text-slate-500" id="pct-wants">0%</p>
+                            </div>
                         </div>
 
                         <!-- Ahorro/Inversión -->
@@ -206,7 +212,7 @@
                                 <div id="bar-savings" class="bg-secondary h-3 rounded-full transition-all duration-500" style="width: 0%"></div>
                             </div>
                             <div class="flex justify-between items-center mt-1">
-                                <p class="text-[10px] text-slate-400 dark:text-slate-500">Sugerido según ingresos</p>
+                                <p class="text-[10px] text-slate-400 dark:text-slate-500" id="earmark-savings">Sugerido según ingresos</p>
                                 <p class="text-xs text-right text-slate-400 dark:text-slate-500" id="pct-savings">0%</p>
                             </div>
                         </div>
@@ -263,6 +269,15 @@
                                         <select id="tx-rule" class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-slate-100 rounded-lg focus:ring-2 focus:ring-primary outline-none text-sm">
                                             <option value="needs">Necesidad</option>
                                             <option value="wants">Deseo</option>
+                                        </select>
+                                    </div>
+                                    <div id="container-income-target" style="display: none;">
+                                        <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Destino del Ingreso</label>
+                                        <select id="tx-income-target" class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-slate-100 rounded-lg focus:ring-2 focus:ring-primary outline-none text-sm">
+                                            <option value="rule">Distribuir según la regla</option>
+                                            <option value="needs">Solo para Necesidades (no se divide)</option>
+                                            <option value="wants">Solo para Deseos (no se divide)</option>
+                                            <option value="savings">Solo para Ahorro/Inversión (no se divide)</option>
                                         </select>
                                     </div>
                                 </div>
